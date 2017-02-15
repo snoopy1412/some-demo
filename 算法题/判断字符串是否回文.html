@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		var str = '我是一个兵个一是我',
+			str2 = '我是一个兵个是一我';
+
+
+		isPalindrome2(str)
+		/**
+		 * 方法一
+		 */
+		function isPalindrome(str){
+			if(typeof str !== 'string') return;
+			// return str.split('') === str.split('').reverse()  错误的方法，两个数组无法单纯的比较，返回的都是false
+			return str === str.split('').reverse().join('')
+		}
+
+		/**
+		 * 方法二
+		 */
+		function isPalindrome2(str){
+			if(typeof str !== 'string') return;
+			for (var i = 0; i < str.length; i++) {
+				if(str[i] !== str[str.length - 1- i]){
+					return false
+				}
+			}
+			return true;
+		}
+
+		/**
+		 * 方法三
+		 */
+		function isPalindrome3(str){
+			if(typeof str !== 'string') return;
+			var strPalindrome = Array.prototype.reduceRight.call(str,function(per,cur){
+				return per + cur;
+			})
+			return str === strPalindrome
+		}		
+
+
+	</script>
+</body>
+</html>

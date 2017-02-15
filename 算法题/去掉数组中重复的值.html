@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		var arr = ['中国', '我', '12', '34', '12', '中国']
+
+		/**
+		 * 方法一
+		 * 同时修复了'222'和222的情况
+		 */
+		function unique(arr) {
+			var result = {},
+				newArr = [],
+				prefix = '';
+			for (var i = 0; i < arr.length; i++) {
+				var p
+				if (typeof arr[i] == 'string') {
+					prefix = '_str'
+				} else {
+					prefix = '';
+				}
+				if (!result[arr[i] + prefix]) {
+
+					result[arr[i] + prefix] = true;
+					newArr.push(arr[i])
+				}
+			}
+			return newArr;
+		}
+
+		/**
+		 * 方法二
+		 */
+		function unique2(arr) {
+			return [...new Set(arr)];
+		}
+
+		/**
+		 * 方法三
+		 * 效率可能一般般
+		 */
+		function unique3(arr) {
+			var newArr = []
+			for (var i = 0; i < arr.length; i++) {
+				if (newArr.indexOf(arr[i]) == -1) {
+					newArr.push(arr[i])
+				}
+			}
+			return newArr
+		}
+
+		/**
+		 * 方法四
+		 * 有意思的方法
+		 */
+		function unique4(arr) {
+			var newArr = []
+			for (var i = 0; i < arr.length; i++) {
+				if (arr.indexOf(arr[i]) === i) {
+					newArr.push(arr[i])
+				}
+			}
+			return newArr
+		}
+
+		/**
+		 * 方法五
+		 * 重新排序了
+		 */
+		function unique5(arr) {
+			var newArr = [];
+			newArr[0] = arr[0];
+			arr.sort();
+			for (var i = 1; i < arr.length; i++) {
+				if (arr[i] !== newArr[newArr.length - 1]) {
+					newArr.push[arr[i]]
+				}
+			}
+		}
+
+	</script>
+</body>
+</html>

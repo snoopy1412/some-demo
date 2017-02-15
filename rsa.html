@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		var msg = 20,
+			p = 5,
+			q = 13,
+			n = p * q,
+			e = 17, //1 ~ (p-1)(q-1) 之间 1~48
+			d, num = 0; // 模反函数
+
+		// 计算d
+		while (num >= 0) {
+			num++;
+			if (e * num % ((p - 1) * (q - 1)) == 1) {
+				d = num;
+				num = -100;
+			}
+		}
+		
+		console.log('需要加密的msg：' + msg);
+		console.log('p: ' + p);
+		console.log('q: ' + q);
+		console.log('n: ' + n);
+		console.log('e: ' + e);
+		console.log('d: ' + d);
+
+		var c = encrypt(msg, n, e);
+
+		decode(c, n, d)
+
+		function encrypt(msg, n, e) {
+			var c = Math.pow(msg, e) % n;
+			console.log('需要加密的数为' + msg + ';加密后成为' + c + '!');
+			return c;
+		}
+
+		function decode(c, n, d) {
+			var m = Math.pow(c, d) % n;
+			console.log("将加密的"+c +"解密为"+m + "!");
+			return m;
+		}
+
+
+	</script>
+</body>
+</html>

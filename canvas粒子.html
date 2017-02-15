@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	body{
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+	}
+	#container{
+		position: relative;
+	}
+	.cirle{
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		position: absolute;
+		background: red;
+	}
+	</style>
+</head>
+<body>
+
+	<canvas id='canvas'></canvas>
+
+	<script type="text/javascript">
+		window.onload = function() {
+			var oCanvas = document.getElementById('canvas');
+			var oGc = oCanvas.getContext('2d');
+			oCanvas.width = document.documentElement.clientWidth;
+			oCanvas.height = document.documentElement.clientHeight;
+
+			var arrBalls = [];
+
+			oCanvas.onmousemove = function(ev) {
+
+				arrBalls.push({
+					r: 10,
+					ox: ev.clientX,
+					oy: ev.clientY,
+					x: ev.clientX,
+					y: ev.clientY,
+					c1: Math.floor(Math.random() * 255 + 1),
+					c2: Math.floor(Math.random() * 255 + 1),
+					c3: Math.floor(Math.random() * 255 + 1),
+					c4: Math.random(),
+					sX: Math.random() * 6 - 3,
+					sY: -(Math.random() * 6 - 3)
+				})
+
+			}
+
+
+
+			// request
+
+			window.requestAnimFrame = (function() {
+				return window.requestAnimationFrame ||
+					window.webkitRequestAnimationFrame ||
+					window.mozRequestAnimationFrame ||
+					window.oRequestAnimationFrame ||
+					window.msRequestAnimationFrame ||
+					function( /* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+						window.setTimeout(callback, 1000 / 60);
+					};
+			})();
+
+			function show() {
+
+				requestAnimFrame(show);
+
+				if (arrBalls.length > 100) {
+					arrBalls.length = 100;
+				}
+
+				oGc.clearRect(0, 0, oCanvas.width, oCanvas.height);
+
+				for (var i = 0; i < arrBalls.length; i++) {
+					arrBalls[i].sY += 0.02;
+					arrBalls[i].x += arrBalls[i].sX;
+					arrBalls[i].y += arrBalls[i].sY;
+
+					// if(arrBalls[i].y >= oCanvas.height - arrBalls[i].r){
+					// 	arrBalls[i].y = oCanvas.height - arrBalls[i].r
+					// 	arrBalls[i].sY *=0.95;
+					// 	arrBalls[i].sY *=-1;
+					// 	arrBalls[i].sX *= 0.95;
+					// }
+
+					// if(arrBalls[i].x < 0 || arrBalls[i].x > oCanvas.width ||  Math.abs(arrBalls[i].sX) <= 0.01){
+					// 	arrBalls.splice(i,1);
+					// }
+
+					if (Math.abs(arrBalls[i].ox - arrBalls[i].x) > 50 || Math.abs(arrBalls[i].oy - arrBalls[i].y) > 50) {
+						arrBalls.splice(i, 1);
+					}
+
+				};
+
+				for (var i = 0; i < arrBalls.length; i++) {
+					oGc.beginPath();
+					oGc.fillStyle = 'rgba(' + arrBalls[i].c1 + ',' + arrBalls[i].c2 + ',' + arrBalls[i].c3 + ',' + arrBalls[i].c4 + ')';
+					oGc.moveTo(arrBalls[i].x, arrBalls[i].y);
+					oGc.arc(arrBalls[i].x, arrBalls[i].y, arrBalls[i].r, 0, 360 * Math.PI / 180, false);
+					oGc.closePath();
+					oGc.fill();
+				};
+
+			}
+
+			show()
+
+		}
+
+	</script>
+</body>
+</html>

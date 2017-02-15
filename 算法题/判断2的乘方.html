@@ -1,0 +1,29 @@
+<!DOCTYPE html >
+	<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		var num = 33;
+
+		function getPower(num) {
+			var result = 0,
+				i = 0;
+			do {
+				i++;
+				result = Math.pow(2, i)
+			} while (result < num)
+			return result === num;
+		}
+
+		function getPower2(num) {
+			console.log(num , num-1 , num & (num - 1))
+			return (num & (num - 1) ) === 0;
+		}
+
+		console.log(getPower2(num))
+	</script>
+</body>
+</html>

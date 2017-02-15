@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	.container3D {
+		position: relative;
+		width: 700px;
+		height: 306px;
+		z-index: 1;
+		overflow: hidden;
+	}
+	.wrapper3D{
+		width: 100%;
+		height: 100%;
+		background-repeat: no-repeat;
+		background-position: 0 0;
+	}
+	.wrapper3D .child{
+		width: 100px;
+		height: 61.2px;
+		float: left;
+	}
+	.slide3D-prev-button,.slide3D-next-button{
+		position: absolute;
+		top: 50%;
+		width: 40px;
+		height: 100px;
+		z-index: 2;
+		cursor: pointer;
+		background-repeat: no-repeat;
+		background-size: 100% auto;
+		background-color: rgba(0, 0, 0, .5);
+		transform: translate(0, -50%);
+		transition-duration: 300ms;
+	}
+
+	.slide3D-next-button {
+		right: 0;
+		background-image: url(t_next.gif);
+	}
+
+	.slide3D-prev-button {
+		left: 0;
+		background-image: url(t_prev.gif);
+	}
+
+	.slide3D-next-button:hover,
+	.slide3D-prev-button:hover {
+		background-color: rgba(0, 0, 0, .7);
+	}
+	@keyframes 
+	</style>
+</head>
+<body>
+	<div class="container3D">   
+	  <div class="wrapper3D"></div>   
+	  <div class="slide3D-pagination"></div>   
+	  <div class="slide3D-prev-button"></div>   
+	  <div class="slide3D-next-button"></div>   
+	</div>
+	<script type="text/javascript" src='http://cdn.bootcss.com/jquery/2.2.4/jquery.min.js'></script>
+	<script type="text/javascript">
+		'use strict'
+		var imgData = ['t_image-slider-1.jpg', 't_image-slider-3.jpg', 't_image-slider-4.jpg', 't_image-slider-5.jpg']
+		
+		var Slider = function(options) {
+			var Defaults = {
+				images: []
+			}
+			this.options = Object.assign({}, Defaults, options);
+			
+			this.el = this.options.el;
+			this.images = this.options.images;
+
+			this.$el = document.querySelector(this.el);
+			this.$next = document.querySelector('.slide3D-next-button')
+			this.$prev = document.querySelector('.slide3D-prev-button')
+			this.frag = null;
+			this.prevIndex = 0;
+			this.imgIndex = 0;
+			this.total = 7 * 5;
+			this.onBtn = false;
+			this.init()
+		}
+
+		Slider.prototype = {
+			constrator: Slider,
+			init() {
+				this.bg = this.$el.children[0];
+				this.loadImg(this.imgIndex)
+				this.bindNext();
+				this.bindPrev();
+			},
+			loadImg(index){
+				this.bg.style.backgroundImage = "url(" + this.images[index] + ")";
+			},
+			update(index) {
+				var _this = this;
+				this.total = 7 * 5;
+				this.devide(this.prevIndex);
+				var items = this.bg.querySelectorAll('.child');
+				for (var i = 0; i < items.length; i++) {
+					this.move(items[i],index,i)
+				}
+			},
+			move(item,index,i){
+				var _this = this;
+				setTimeout(function(){
+						_this.animate(item,function(data){
+							if(data['rotation']>90){
+								this.style.backgroundImage = "url(" + _this.images[index] + ")";
+							}
+							if(data['rotation']<90){
+								this.style.transform = "rotateY("+data['rotation']+"deg)";
+							}else if(data['rotation']>90){
+								this.style.transform = "rotateY("+data['rotation']+"deg) scale(-1,1)";
+							}
+						},function(){
+							if(--_this.total <= 0){
+								_this.removeDevides();
+								_this.loadImg(index);
+								_this.onBtn = false;
+							}
+						},i)
+				},i*30)
+			},
+			bindNext() {
+				var _this = this;
+				if(!this.onBtn){
+					this.$next.addEventListener('click', _this.next.bind(_this), null)
+				}
+			},
+			bindPrev() {
+				var _this = this;
+				if(!this.onBtn){
+					this.$prev.addEventListener('click', _this.prev.bind(_this), null)
+				}
+			},
+			next() {
+				if(!this.onBtn){
+					var self = this;
+					this.onBtn = true;
+					this.prevIndex = this.imgIndex
+					this.imgIndex++;
+					this.imgIndex = this.imgIndex % this.images.length;
+					this.update(self.imgIndex)					
+				}
+			},
+			prev() {
+				var self = this;
+				if(!this.onBtn){
+					this.onBtn = true;
+					this.prevIndex = this.imgIndex
+					this.imgIndex--;
+					if (this.imgIndex < 0) {
+						this.imgIndex = this.images.length - 1;
+					}
+					this.update(self.imgIndex)					
+				}
+			},
+			devide(index) {
+				// 4 5
+				var len = 35;
+				this.frag = document.createDocumentFragment();
+
+				for (var i = 0; i < len; i++) {
+					var div = document.createElement('div');
+					div.className = 'child';
+					div.style.backgroundImage = "url(" + this.images[index] + ")";
+					div.style.backgroundPosition = -(i % 7 * 100) + "px " + -(~~(i / 7) * 61.2) + "px";
+					this.frag.append(div)
+				}
+				this.bg.appendChild(this.frag);
+
+			},
+			removeDevides() {
+				this.bg.innerHTML = '';
+			},
+			animate: function(item, fn, fnEnd, index) {
+				var data = {},
+					rotation = 0;
+				item.timer = setInterval(function() {
+					rotation += 10;
+					data['rotation'] = rotation
+					fn && fn.call(item,data)
+					if (rotation >= 180) {
+						clearInterval(item.timer)
+						fnEnd && fnEnd.call(item)
+					}
+				}, 16)
+			}
+		}
+
+		new Slider({
+			el: '.container3D',
+			images: imgData
+		});
+	</script>
+</body>
+</html>

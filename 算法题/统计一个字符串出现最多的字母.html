@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script type="text/javascript">
+		var str = 'aaassssbci12afwewefnkaevfneibrveryovyeorvervweurverovasdxbcasbhdvbqekjrlfq3ln4f';
+		/**
+		 * 方法一
+		 */
+		function countChar(str) {
+			var min = 0,
+				newObj = {},
+				result = {};
+			for (var i = 0; i < str.length; i++) {
+				!newObj[str[i]] ? newObj[str[i]] = 1 : newObj[str[i]]++;
+
+				if (newObj[str[i]] > min) {
+					result = {
+						num: newObj[str[i]],
+						key: str[i]
+					}
+					min = newObj[str[i]]
+				}
+			}
+			return result
+		}
+		/**
+		 * 方法二
+		 */
+		function countChar2(str) {
+			//b.length - a.length 从大到小排列
+			return str.split('').sort().join('').match(/(\S)\1*/g).sort(function(a,b){return b.length - a.length})[0][0]
+		}
+
+		/**
+		 * 方法三
+		 */
+		function countChar3(str) {
+			var arr = [];
+			for (var i = 0, length = str.length; i < length; i++) {
+				var index = -1;
+				var j = 0;
+				//找每一个字符
+				do {
+					index = str.indexOf(str[i], index + 1);
+					if (index != -1) {
+						j++;
+					}
+				} while (index != -1);
+				arr[j] = str[i]; //把字符串str中的字符赋给数组arr索引为j的数据，当多次循环后，会出现重复赋值的现象，后赋值的会把之前的赋值覆盖掉，但不影响我们找出字符出现最多的那个
+			}
+			return arr[arr.length - 1]
+		}
+
+
+		//总结
+		//方法二和方法三比较难理解
+	</script>
+</body>
+</html>
